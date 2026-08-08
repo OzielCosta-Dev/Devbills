@@ -2,6 +2,7 @@ import { type Category, TransactionType } from "@prisma/client";
 import prisma from "../config/prisma.js";
 
 
+
 type GlobalCategoryInput = Pick<Category, "name" | "color" | "type">
 
 const globalCategories: GlobalCategoryInput[] = [
@@ -47,7 +48,7 @@ export const initializeGlobalCategories = async (): Promise<Category[]> => {
             createdCategories.push(existing)
         }
     } catch(err){
-            console.error('🚨 Erro ao criar categorias');
+            console.error('🚨 Erro ao criar categorias', err);
     }
 
 

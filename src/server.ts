@@ -1,11 +1,9 @@
 import app from './app.js';
-import dotenv from 'dotenv';
 import { prismaConnect } from './config/prisma.js';
 import { initializeGlobalCategories } from './services/gloabalCategories.service.js';
-dotenv.config();
+import { env } from './config/env.js';
 
-
-const PORT = Number(process.env.PORT);
+const PORT = env.PORT;
 
 const startServer = async () => {
 
