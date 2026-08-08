@@ -7,6 +7,7 @@ import { getTransactions } from "../controllers/transactions/getTransactions.con
 import { getTransactionsSummary } from "../controllers/transactions/getTransactionsSummary.controller.js";
 import { getCategories } from "../controllers/category.controller.js";
 import { deleteTransaction } from "../controllers/transactions/deleteTransaction.controller.js";
+import { getTransactionById } from "../controllers/transactions/getTransactionById.controller.js";
 
 
 
@@ -33,7 +34,7 @@ const transactionRoutes = async(fastify: FastifyInstance) => {
    });
 
 
-    //Buscar o resumo 
+    //Buscar o resumo
     fastify.route({
         method: "GET",
         url: "/summary",
@@ -41,6 +42,16 @@ const transactionRoutes = async(fastify: FastifyInstance) => {
             querystring: z.toJSONSchema(getTransactionsSummarySchema, { target: "draft-7" }),
         },
         handler:getTransactionsSummary,
+    });
+
+    //Buscar por ID
+    fastify.route({
+        method: "GET",
+        url: "/:id",
+        schema: {
+            params: z.toJSONSchema(deleteTransactionSchema, { target: "draft-7" }),
+        },
+        handler: getTransactionById,
     });
 
    // Deletar
