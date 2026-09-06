@@ -8,10 +8,13 @@ import { getTransactionsSummary } from "../controllers/transactions/getTransacti
 import { getCategories } from "../controllers/category.controller.js";
 import { deleteTransaction } from "../controllers/transactions/deleteTransaction.controller.js";
 import { getTransactionById } from "../controllers/transactions/getTransactionById.controller.js";
+import { authMiddleware } from "../middlewares/auth.middlewares.js";
 
 
 
 const transactionRoutes = async(fastify: FastifyInstance) => {
+
+    fastify.addHook('preHandler', authMiddleware);
     
    // Criação
    fastify.route({

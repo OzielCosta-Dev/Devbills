@@ -8,7 +8,7 @@ import prisma from "../../config/prisma.js";
 const createTransaction = async (
   request:FastifyRequest<{Querystring: CreateTransactionSchema}>, 
   reply: FastifyReply): Promise<void> => {
-      const userId = "FED$%DF%RDF"
+      const userId = request.userId; 
 
       if(!userId){
          reply.status(401).send({ error: "Usuário não autenticado"})

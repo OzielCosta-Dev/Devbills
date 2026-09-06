@@ -11,7 +11,7 @@ export const deleteTransaction = async(
     reply: FastifyReply
 ): Promise <void> => {
 
-    const userId = "FED$%DF%RDF"
+    const userId = request.userId; 
     const { id } = request.params
        if(!userId){
          reply.status(401).send({ error: "Usuário não autenticado"})

@@ -11,7 +11,7 @@ export const getTransactions = async(
     request: FastifyRequest<{Querystring: GetTransactionsQuery }>, 
     reply: FastifyReply
 ): Promise<void> => {
-    const userId = "FED$%DF%RDF"
+    const userId = request.userId; 
 
        if(!userId){
          reply.status(401).send({ error: "Usuário não autenticado"})

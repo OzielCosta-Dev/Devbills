@@ -7,7 +7,7 @@ export const getTransactionById = async(
     reply: FastifyReply
 ): Promise<void> => {
 
-    const userId = "FED$%DF%RDF"
+    const userId = request.userId; 
     const { id } = request.params
 
     if(!userId){
