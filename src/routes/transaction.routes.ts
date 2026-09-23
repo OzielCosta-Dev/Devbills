@@ -2,7 +2,7 @@ import { z } from "zod";
 import fastify from "fastify";
 import { type FastifyInstance } from "fastify";
 import createTransaction from "../controllers/transactions/createTransaction.controller.js";
-import { createTransactionSchema, deleteTransactionSchema, getTransactionsSchema, getTransactionsSummarySchema } from "../schemas/transactions.schema.js";
+import { createTransactionSchema, deleteTransactionSchema, getHistoricalTransactionsSchema, getTransactionsSchema, getTransactionsSummarySchema } from "../schemas/transactions.schema.js";
 import { getTransactions } from "../controllers/transactions/getTransactions.controller.js";
 import { getTransactionsSummary } from "../controllers/transactions/getTransactionsSummary.controller.js";
 import { getCategories } from "../controllers/category.controller.js";
@@ -46,6 +46,17 @@ const transactionRoutes = async(fastify: FastifyInstance) => {
         },
         handler:getTransactionsSummary,
     });
+
+       //Historico de transações
+    fastify.route({
+        method: "GET",
+        url: "/historical",
+        schema: {
+            querystring: z.toJSONSchema(getHistoricalTransactionsSchema, { target: "draft-7" }),
+        },
+        handler:getTransactionsSummary,
+    });
+
 
     //Buscar por ID
     fastify.route({
