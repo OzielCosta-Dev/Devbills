@@ -9,6 +9,7 @@ import { getCategories } from "../controllers/category.controller.js";
 import { deleteTransaction } from "../controllers/transactions/deleteTransaction.controller.js";
 import { getTransactionById } from "../controllers/transactions/getTransactionById.controller.js";
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
+import { getHistoricalTransactions } from "../controllers/transactions/getHistoricalTransactions.controler.js";
 
 
 
@@ -54,7 +55,7 @@ const transactionRoutes = async(fastify: FastifyInstance) => {
         schema: {
             querystring: z.toJSONSchema(getHistoricalTransactionsSchema, { target: "draft-7" }),
         },
-        handler:getTransactionsSummary,
+        handler:getHistoricalTransactions,
     });
 
 

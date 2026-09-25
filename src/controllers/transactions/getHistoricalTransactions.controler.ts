@@ -4,6 +4,10 @@ import dayjs from "dayjs";
 import prisma from "../../config/prisma.js";
 import { lessThanOrEqual } from "firebase/firestore/pipelines";
 
+
+
+dayjs.locale('pt-br');
+
 export const getHistoricalTransactions = async (
     request: FastifyRequest<{Querystring: GetHistoricalTransactionsQuery}>,
     reply: FastifyReply
@@ -27,7 +31,7 @@ export const getHistoricalTransactions = async (
     try {
         
 
-         const transactions = await prisma.transaction.deleteMany({
+         const transactions = await prisma.transaction.findMany({
             where: {
                 userId,
                 date: {
@@ -41,8 +45,24 @@ export const getHistoricalTransactions = async (
                 type: true,
                 date: true,
             }
-         })
+         });
 
+         const monthlyData = Array.from({ length: months }, (_,i) => {
+            const date = dayjs(baseDate).subtract(months -1 -i, 'month')
+
+            return {
+                name: date.format("MMM/YYYY"),
+                income: 0,
+                expense: 0,
+            }
+
+
+         });
+
+         transactions.forEach( transaction => {
+            const monthkey = dayjs(transaction.date).format("MMM/YYYY")
+            const monthData = monthlyData.find( m => m.name === monthkey);
+         })
 
     } catch (err) {
         
