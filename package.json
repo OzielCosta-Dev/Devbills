@@ -1,11 +1,15 @@
 {
-  "name": "typecript-project",
+  "name": "devbills-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API do DevBills - controle financeiro pessoal",
+  "main": "src/server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "lint": "biome check src"
   },
   "keywords": [],
   "author": "",

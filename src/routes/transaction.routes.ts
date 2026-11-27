@@ -1,84 +1,86 @@
+import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import fastify from "fastify";
-import { type FastifyInstance } from "fastify";
 import createTransaction from "../controllers/transactions/createTransaction.controller.js";
-import { createTransactionSchema, deleteTransactionSchema, getHistoricalTransactionsSchema, getTransactionsSchema, getTransactionsSummarySchema } from "../schemas/transactions.schema.js";
+import { deleteTransaction } from "../controllers/transactions/deleteTransaction.controller.js";
+import { getHistoricalTransactions } from "../controllers/transactions/getHistoricalTransactions.controler.js";
+import { getTransactionById } from "../controllers/transactions/getTransactionById.controller.js";
 import { getTransactions } from "../controllers/transactions/getTransactions.controller.js";
 import { getTransactionsSummary } from "../controllers/transactions/getTransactionsSummary.controller.js";
-import { getCategories } from "../controllers/category.controller.js";
-import { deleteTransaction } from "../controllers/transactions/deleteTransaction.controller.js";
-import { getTransactionById } from "../controllers/transactions/getTransactionById.controller.js";
+import { updateTransaction } from "../controllers/transactions/updateTransaction.controller.js";
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
-import { getHistoricalTransactions } from "../controllers/transactions/getHistoricalTransactions.controler.js";
+import {
+	createTransactionSchema,
+	getHistoricalTransactionsSchema,
+	getTransactionsSchema,
+	getTransactionsSummarySchema,
+	transactionIdSchema,
+	updateTransactionSchema,
+} from "../schemas/transactions.schema.js";
 
+const toSchema = (schema: z.ZodType) =>
+	z.toJSONSchema(schema, { target: "draft-7" });
 
+const transactionRoutes = async (fastify: FastifyInstance): Promise<void> => {
+	fastify.addHook("onRequest", authMiddleware);
 
-const transactionRoutes = async(fastify: FastifyInstance) => {
+	// Criação
+	fastify.route({
+		method: "POST",
+		url: "/",
+		schema: { body: toSchema(createTransactionSchema) },
+		handler: createTransaction,
+	});
 
-    fastify.addHook('preHandler', authMiddleware);
-    
-   // Criação
-   fastify.route({
-       method: "POST",
-       url:"/",
-       schema: {
-           body: z.toJSONSchema(createTransactionSchema, { target: "draft-7" }),
-       },
-       handler: createTransaction,
-   });
-   
-   //Buscar com Filtros
-   fastify.route({
-    method: "GET",
-    url: "/",
-    schema: {
-        querystring: z.toJSONSchema(getTransactionsSchema, { target: "draft-7" }),
-    },
-    handler: getTransactions,
-   });
+	// Buscar com filtros
+	fastify.route({
+		method: "GET",
+		url: "/",
+		schema: { querystring: toSchema(getTransactionsSchema) },
+		handler: getTransactions,
+	});
 
+	// Resumo do mês
+	fastify.route({
+		method: "GET",
+		url: "/summary",
+		schema: { querystring: toSchema(getTransactionsSummarySchema) },
+		handler: getTransactionsSummary,
+	});
 
-    //Buscar o resumo
-    fastify.route({
-        method: "GET",
-        url: "/summary",
-        schema: {
-            querystring: z.toJSONSchema(getTransactionsSummarySchema, { target: "draft-7" }),
-        },
-        handler:getTransactionsSummary,
-    });
+	// Histórico mensal
+	fastify.route({
+		method: "GET",
+		url: "/historical",
+		schema: { querystring: toSchema(getHistoricalTransactionsSchema) },
+		handler: getHistoricalTransactions,
+	});
 
-       //Historico de transações
-    fastify.route({
-        method: "GET",
-        url: "/historical",
-        schema: {
-            querystring: z.toJSONSchema(getHistoricalTransactionsSchema, { target: "draft-7" }),
-        },
-        handler:getHistoricalTransactions,
-    });
+	// Buscar por ID
+	fastify.route({
+		method: "GET",
+		url: "/:id",
+		schema: { params: toSchema(transactionIdSchema) },
+		handler: getTransactionById,
+	});
 
+	// Atualizar
+	fastify.route({
+		method: "PUT",
+		url: "/:id",
+		schema: {
+			params: toSchema(transactionIdSchema),
+			body: toSchema(updateTransactionSchema),
+		},
+		handler: updateTransaction,
+	});
 
-    //Buscar por ID
-    fastify.route({
-        method: "GET",
-        url: "/:id",
-        schema: {
-            params: z.toJSONSchema(deleteTransactionSchema, { target: "draft-7" }),
-        },
-        handler: getTransactionById,
-    });
-
-   // Deletar
-    fastify.route({
-      method: "DELETE",
-      url: "/:id",
-      schema: {
-        params:  z.toJSONSchema(deleteTransactionSchema, { target: "draft-7" }),
-      },
-      handler: deleteTransaction,
-    });
-      
-    };
+	// Deletar
+	fastify.route({
+		method: "DELETE",
+		url: "/:id",
+		schema: { params: toSchema(transactionIdSchema) },
+		handler: deleteTransaction,
+	});
+};
 
 export default transactionRoutes;

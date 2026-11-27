@@ -1,9 +1,9 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import type { DeleteTransactionParams } from "../../schemas/transactions.schema.js";
+import type { TransactionIdParams } from "../../schemas/transactions.schema.js";
 import prisma from "../../config/prisma.js";
 
 export const getTransactionById = async(
-    request: FastifyRequest<{ Params: DeleteTransactionParams }>,
+    request: FastifyRequest<{ Params: TransactionIdParams }>,
     reply: FastifyReply
 ): Promise<void> => {
 

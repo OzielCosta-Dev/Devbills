@@ -15,7 +15,8 @@ const initializeFirebaseAdmin = (): void => {
             credential: cert({
                 projectId: FIREBASE_PROJECT_ID,
                 clientEmail: FIREBASE_CLIENTE_EMAIL,
-                privateKey: FIREBASE_PRIVATE_KEY,
+                // Chaves vindas do .env costumam ter "\n" literais em vez de quebras de linha
+                privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
             }),
         });
     } catch (err) {

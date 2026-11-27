@@ -6,6 +6,7 @@ API REST para controle financeiro pessoal (receitas, despesas e categorias), con
 
 - [Fastify](https://fastify.dev/) — servidor HTTP
 - [Prisma ORM](https://www.prisma.io/) + MongoDB — persistência de dados
+- Firebase Admin — autenticação (verificação do ID token)
 - [Zod](https://zod.dev/) — validação de schemas (body, query e params)
 - TypeScript
 
@@ -34,7 +35,13 @@ API REST para controle financeiro pessoal (receitas, despesas e categorias), con
    PORT=3001
    NODE_ENV=dev
    DATABASE_URL="mongodb+srv://usuario:senha@cluster/banco"
+   CORS_ORIGIN=http://localhost:5173
+   FIREBASE_PROJECT_ID=
+   FIREBASE_CLIENTE_EMAIL=
+   FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
    ```
+
+   Veja também o arquivo `.env.example`. Se usar MongoDB Atlas, libere o seu IP em **Network Access**.
 
 4. Inicie o servidor em modo desenvolvimento:
 
@@ -66,6 +73,8 @@ prisma/
 
 Base URL: `/api`
 
+Todas as rotas de `/categories` e `/transactions` exigem o header `Authorization: Bearer <ID token do Firebase>`.
+
 ### Health check
 
 | Método | Rota      | Descrição               |
@@ -85,7 +94,9 @@ Base URL: `/api`
 | POST   | `/`        | Cria uma transação                                        |
 | GET    | `/`        | Lista transações (filtros opcionais: `month`, `year`, `type`, `categoryId`) |
 | GET    | `/summary` | Retorna o resumo do período (`month` e `year` obrigatórios) |
+| GET    | `/historical` | Totais mensais de receitas e despesas (`month`, `year`; `months` opcional, padrão 6) |
 | GET    | `/:id`     | Busca uma transação pelo ID                               |
+| PUT    | `/:id`     | Atualiza uma transação                                    |
 | DELETE | `/:id`     | Remove uma transação                                      |
 
 ## Modelo de dados
@@ -98,3 +109,7 @@ Base URL: `/api`
 | Comando       | Descrição                          |
 | ------------- | ------------------------------------ |
 | `npm run dev` | Inicia o servidor com hot reload (`tsx watch`) |
+| `npm start` | Inicia o servidor sem hot reload |
+| `npm run typecheck` | Checagem de tipos |
+| `npm run db:push` | Sincroniza schema e índices do Prisma com o MongoDB |
+| `npm run lint` | Biome (lint + formatação) |

@@ -6,7 +6,7 @@ import { authMiddleware } from "../middlewares/auth.middlewares.js";
 
 
 const categoryRoutes = async(fastify: FastifyInstance): Promise<void> => {
-  fastify.addHook("preHandler", authMiddleware);
+  fastify.addHook("onRequest", authMiddleware);
 
   fastify.get('/', getCategories)
    

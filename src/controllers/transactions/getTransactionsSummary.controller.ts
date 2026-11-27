@@ -75,12 +75,12 @@ export const getTransactionsSummary = async (
     }
   }
       const summary: TransactionSummary = {
-        totalExpenses,
-        totalIncomes,
+        totalExpenses: Number(totalExpenses.toFixed(2)),
+        totalIncomes: Number(totalIncomes.toFixed(2)),
         balance: Number((totalIncomes - totalExpenses).toFixed(2)),
         expensesByCategory: Array.from(groupedExpenses.values()).map( (entry) => ({
           ...entry,
-          percentage: Number.parseFloat(((entry.amount / totalExpenses) * 100).toFixed(2))
+          percentage: totalExpenses > 0 ? Number.parseFloat(((entry.amount / totalExpenses) * 100).toFixed(2)) : 0
         }) ).sort( (a,b) => b.amount - a.amount),
       }
       reply.send(summary)
